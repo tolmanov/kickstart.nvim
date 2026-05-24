@@ -84,6 +84,15 @@ local dapui = require 'dapui'
       end,
       desc = 'Debug: See last session result.',
     },
+    {
+      '<leader>dc',
+      function()
+        -- local file = vim.fn.expand '%'
+        -- require('dap-python').debug_file(file)
+        require('dap-python').test_method()
+      end,
+      { desc = 'Debug current file (pytest)' },
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -155,6 +164,8 @@ dap.listeners.before.event_exited['dapui_config'] = dapui.close
         detached = vim.fn.has 'win32' == 0,
       },
     }
-    require('dap-python').setup '~/git/visa-reschedule/.venv/bin/python'
+    -- require('dap-python').setup '~/git/visa-reschedule/.venv/bin/python'
+    -- require('dap-python').setup '~/Coding/qrt_hw/.venv/bin/python'
+    require('dap-python').setup '~/Coding/bonds/ofz/.venv/bin/python'
   end,
 }
