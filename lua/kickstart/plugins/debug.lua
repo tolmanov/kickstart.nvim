@@ -28,6 +28,30 @@ vim.keymap.set('n', '<F7>', function() require('dapui').toggle() end, { desc = '
 vim.keymap.set('n', '<leader>dc', function() require('dap-python').test_method() end, { desc = 'Debug: Run Current Test' })
 vim.keymap.set('n', '<leader>ds', function() require('dap-python').debug_selection() end, { desc = 'Debug: Selection' })
 
+
+-- Execute seceltion in REPL during debug
+vim.keymap.set('v', '<leader>dr', function()
+  -- 1. Get the visual selection
+  local _, ls, cs = unpack(vim.fn.getpos('v'))
+  local _, le, ce = unpack(vim.fn.getpos('.'))
+  
+  -- Ensure order (start < end)
+  if ls > le or (ls == le and cs > ce) then
+    ls, le = le, ls
+    cs, ce = ce, cs
+  end
+  
+  local lines = vim.api.nvim_buf_get_lines(0, ls - 1, le, false)
+  lines[#lines] = string.sub(lines[#lines], 1, ce)
+  lines[1] = string.sub(lines[1], cs)
+  
+  local selection = table.concat(lines, '\n')
+  
+  -- 2. Send to REPL
+  -- require('dap').repl.open()
+  require('dap.repl').execute(selection)
+end, { desc = 'Debug: Execute Selection in REPL' })
+
 local dap = require 'dap'
 local dapui = require 'dapui'
 
